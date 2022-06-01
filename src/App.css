@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .check-content {
+    @apply mb-[51px] flex gap-8 items-center mr-[29px] ml-[70px];
+  }
+  .select-option {
+    @apply py-[2px] px-4 my-[1px] transition-all duration-200 hover:bg-dark-blue dark:hover:bg-dark-bg hover:text-white cursor-pointer;
+  }
+  .select-option.active {
+    @apply text-white bg-dark-blue;
+  }
+  .detail-title {
+    @apply font-semibold mr-1;
+  }
+  .detail-content {
+    @apply break-words;
+  }
+  .card-content {
+    @apply basis-full truncate;
+  }
+  .container {
+    @apply sm:max-w-[600px] md:max-w-[720px] lg:max-w-[920px] xl:max-w-[1200px] 2xl:max-w-[1400px];
+  }
+  .button {
+    @apply cursor-pointer flex justify-center items-center text-16 shadow-md rounded px-5 py-1 bg-white text-center hover:shadow-hover dark:bg-dark-blue dark:hover:shadow-light-hover;
+  }
+  .row {
+    @apply flex flex-wrap;
+  }
+}
