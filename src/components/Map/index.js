@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 
 import mapboxgl from "mapbox-gl";
-
+mapboxgl.mapboxApiAccessToken =
+  "pk.eyJ1IjoiaHV5ZW5uZ3V5ZW4yMDAwIiwiYSI6ImNsM3VoMHN1MDA2MW8zZHFmdWhqemN4cGgifQ.sqWSPmYACdkU8mO3hhLDwA";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaHV5ZW5uZ3V5ZW4yMDAwIiwiYSI6ImNsM3VoMHN1MDA2MW8zZHFmdWhqemN4cGgifQ.sqWSPmYACdkU8mO3hhLDwA";
 const Map = ({ position, markerPosition = null, hideMap }) => {
