@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from "react";
 
 import mapboxgl from "mapbox-gl";
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX;
+mapboxgl.accessToken =
+  "pk.eyJ1IjoiaHV5ZW5uZ3V5ZW4yMDAwIiwiYSI6ImNsM3VoMHN1MDA2MW8zZHFmdWhqemN4cGgifQ.sqWSPmYACdkU8mO3hhLDwA";
 const Map = ({ position, markerPosition = null, hideMap }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
