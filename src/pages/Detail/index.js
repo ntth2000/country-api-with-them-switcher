@@ -25,7 +25,6 @@ const Detail = () => {
         setData(res[0]);
         if (!!res[0].borders) {
           res[0].borders?.forEach((border) => {
-            console.log(border);
             const fetchCountryBorder = async () => {
               const result = await fetch(
                 `https://restcountries.com/v3.1/alpha/${border}`

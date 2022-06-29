@@ -8,7 +8,7 @@ const Back = () => {
   return (
     <button className="button" onClick={handleBack}>
       <span className="mr-2 text-16">
-        <i class="bi bi-arrow-left"></i>
+        <i className="bi bi-arrow-left"></i>
       </span>
       Back
     </button>
