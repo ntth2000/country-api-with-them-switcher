@@ -22,7 +22,6 @@ const SEARCH_BY_MENU = [
     id: "subregion",
     content: "Subregion",
   },
-  { id: "region", content: "Region" },
 ];
 const Search = ({ querySearchBy, searchText }) => {
   let searchByIndex = 0;

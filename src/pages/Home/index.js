@@ -4,7 +4,6 @@ import Card from "../../components/Card";
 import Loading from "../../components/Loading";
 import { useLocation } from "react-router-dom";
 import Search from "../../components/Search";
-import Error from "../../components/Error";
 const REGIONS = [
   "Asia",
   "Americas",
