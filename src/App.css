@@ -32,3 +32,6 @@
     @apply flex flex-wrap;
   }
 }
+* {
+  scroll-behavior: smooth;
+}

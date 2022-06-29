@@ -1,33 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import useDebounce from "../../hooks/useDebounce";
-import useHttp from "../../hooks/useHttp";
+import { useEffect, useState } from "react";
+
 import Card from "../../components/Card";
 import Loading from "../../components/Loading";
-
-const SEARCH_BY_MENU = [
-  {
-    id: "name",
-    content: "Name",
-  },
-  {
-    id: "lang",
-    content: "Language",
-  },
-  {
-    id: "currency",
-    content: "Currency",
-  },
-  {
-    id: "capital",
-    content: "Capital",
-  },
-  {
-    id: "subregion",
-    content: "Subregion",
-  },
-  { id: "region", content: "Region" },
-];
-
+import { useLocation } from "react-router-dom";
+import Search from "../../components/Search";
+import Error from "../../components/Error";
 const REGIONS = [
   "Asia",
   "Americas",
@@ -37,10 +14,11 @@ const REGIONS = [
   "Antarctic",
 ];
 function Home() {
-  const inputRef = useRef();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const querySearchText = searchParams.get("q");
+  const querySearchBy = searchParams.get("option");
 
-  const [searchBy, setSearchBy] = useState(SEARCH_BY_MENU[0]);
-  const [input, setInput] = useState("");
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -48,25 +26,24 @@ function Home() {
   const [renderArray, setRenderArray] = useState(data);
 
   useEffect(() => {
-    if (!input) {
-      const fetchData = async () => {
-        setIsLoading(true);
-        const res = await fetch("https://restcountries.com/v3.1/all");
-        if (res.ok) {
-          const result = await res.json();
-          setData(result);
-        } else {
-          setError({
-            status: res.status,
-            msg: res.statusText,
-          });
-          return;
-        }
-        setIsLoading(false);
-      };
-      fetchData();
-    }
-  }, [input]);
+    const fetchData = async () => {
+      setError(false);
+      setIsLoading(true);
+
+      const URL = querySearchText
+        ? `https://restcountries.com/v3.1/${querySearchBy}/${querySearchText}`
+        : `https://restcountries.com/v3.1/all`;
+      const res = await fetch(URL);
+      if (res.ok) {
+        const result = await res.json();
+        setData(result);
+      } else {
+        setError(true);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [querySearchText, querySearchBy]);
 
   useEffect(() => {
     if (filterOption) {
@@ -76,100 +53,37 @@ function Home() {
     }
   }, [data, filterOption]);
 
-  const handleFilterOption = (region) => {
+  const handleClickOption = ({ region, all }) => {
     setFilterOption(region);
-  };
-  const handleSearchByOption = (category) => {
-    if (category.id !== searchBy.id) {
-      setSearchBy(category);
+    if (all) {
+      setRenderArray(data);
     }
   };
-  const handleSearch = () => {
-    if (input) {
-      const fetchData = async () => {
-        setIsLoading(true);
-        const res = await fetch(
-          `https://restcountries.com/v3.1/${searchBy.id || "all"}/${
-            input || ""
-          }`
-        );
-        if (res.ok) {
-          const result = await res.json();
-          setData(result);
-        } else {
-          setError({
-            status: res.status,
-            msg: res.statusText,
-          });
-          return;
-        }
-        setIsLoading(false);
-      };
-      fetchData();
-    }
-  };
-  const clearInput = () => {
-    setInput("");
-    setSearchBy(SEARCH_BY_MENU[0]);
-    inputRef.current.focus();
-  };
+  let renderedCountryList;
+  if (renderArray.length > 0) {
+    renderedCountryList = (
+      <div className="row md:-mx-6">
+        {renderArray.map((country, index) => (
+          <div
+            key={index}
+            className="px-6 mb-12 basis-full min-w-0 md:basis-2/4 lg:basis-1/3 xl:basis-1/4"
+          >
+            <Card country={country} />
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    renderedCountryList = (
+      <p className="font-semibold text-20 text-center">
+        Not Found Any Countries
+      </p>
+    );
+  }
   return (
     <div className="text-14 container">
       <div className="mt-8 gap-2 flex flex-col md:flex-row">
-        <div
-          className="flex items-center text-dark-gray dark:text-white w-full 
-            rounded shadow-sm bg-white dark:bg-dark-blue pr-3 py-2 md:py-0 md:max-w-[300px] md:mb-0 lg:max-w-[35%]"
-        >
-          <button
-            onClick={handleSearch}
-            className="px-5 text-18 transition-all duration-200 hover:text-dark-blue cursor-pointer"
-          >
-            <i className="bi bi-search"></i>
-          </button>
-          <input
-            ref={inputRef}
-            value={input}
-            onInput={(e) => {
-              setInput(e.target.value);
-            }}
-            type="text"
-            placeholder="Search for a country..."
-            className="flex-1 text-dark-gray outline-none bg-transparent dark:text-white"
-          />
-          {input && (
-            <div
-              onClick={clearInput}
-              className="px-2 py-2 cursor-pointer hover:opacity-80"
-            >
-              <i className="bi bi-x-circle-fill"></i>
-            </div>
-          )}
-        </div>
-        <div
-          className="relative flex justify-between items-center rounded bg-white dark:bg-dark-blue
-          shadow-sm px-4 mb-6 py-3 group w-full md:max-w-[200px] z-[2] md:mb-0"
-        >
-          <span>{`Search By ${searchBy.content}`}</span>
-          <span className="ml-6 ">
-            <i className="bi bi-chevron-down"></i>
-          </span>
-          <div className="absolute hidden group-hover:block top-full left-0 right-0">
-            <ul className="mt-1 py-2 w-full bg-white rounded dark:bg-dark-blue shadow-md">
-              {SEARCH_BY_MENU.map((item) => (
-                <li
-                  key={item.id}
-                  className={`select-option${
-                    item.id === searchBy.id ? " active" : ""
-                  }`}
-                  onClick={() => handleSearchByOption(item)}
-                >
-                  {item.content}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
+        <Search searchText={querySearchText} querySearchBy={querySearchBy} />
         <div
           className="relative flex justify-between items-center rounded bg-white dark:bg-dark-blue
           shadow-sm px-4 py-3 w-fit group min-w-[180px] md:ml-auto"
@@ -184,8 +98,7 @@ function Home() {
                 <li
                   className="select-option"
                   onClick={() => {
-                    handleFilterOption("");
-                    setRenderArray(data);
+                    handleClickOption({ region: "", all: true });
                   }}
                 >
                   All
@@ -197,7 +110,9 @@ function Home() {
                   className={`select-option${
                     item === filterOption ? " active" : ""
                   }`}
-                  onClick={() => handleFilterOption(item)}
+                  onClick={() =>
+                    handleClickOption({ region: item, all: false })
+                  }
                 >
                   {item}
                 </li>
@@ -209,18 +124,7 @@ function Home() {
       <div className="mt-6 md:mt-8">
         {isLoading && <Loading />}
 
-        {!isLoading && !error && Array.isArray(data) && (
-          <div className="row md:-mx-6">
-            {renderArray.map((country, index) => (
-              <div
-                key={index}
-                className="px-6 mb-12 basis-full min-w-0 md:basis-2/4 lg:basis-1/3 xl:basis-1/4"
-              >
-                <Card country={country} />
-              </div>
-            ))}
-          </div>
-        )}
+        {!isLoading && !error && renderedCountryList}
         {!isLoading && error && (
           <p className="font-semibold text-20 text-center">
             Not Found Any Countries
