@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import mapboxgl from "mapbox-gl";
+import mapboxgl from "!mapbox-gl";
 
 // mapboxgl.workerClass =
 //   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
