@@ -4,6 +4,7 @@ const Card = ({ country }) => {
   return (
     <Link
       to={`detail/${country.cca3}`}
+      target="_blank"
       className="bg-white dark:bg-dark-blue rounded-md shadow-md overflow-hidden block cursor-pointer hover:shadow-hover dark:hover:shadow-light-hover"
     >
       <img
