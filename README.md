@@ -9,9 +9,9 @@ Users can:
 - Search for a country using an `input` field by different categories (name, language, subregion, currency, and capital)
 - Filter countries by region
 - Click on a country to see more detailed information on a separate page
+- See a country on the map.
 - Click through to the border countries on the detail page
 - Toggle the color scheme between light and dark mode
-Additional feature: Find 
 
 Source code: https://github.com/ntth2000/country-api-with-theme-switcher
 
